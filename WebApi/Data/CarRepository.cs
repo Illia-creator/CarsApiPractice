@@ -12,8 +12,10 @@
 
         public async Task<Car> GetCarAsync(int carId) => await _context.Cars.FindAsync(new object[] { carId });
 
-        public async Task InsertCarAsync(Car car) => await _context.AddAsync(car);
+        public async Task<List<Car>> GetCarAsync(string name) =>
+             await _context.Cars.Where(h => h.Name.Contains(name)).ToListAsync(); 
 
+        public async Task InsertCarAsync(Car car) => await _context.AddAsync(car);
 
         public async Task ApdateCarAsync(Car car)
         {
