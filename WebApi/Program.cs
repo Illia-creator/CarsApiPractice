@@ -1,4 +1,5 @@
 using WebApi.Data;
+using WebApi.Data.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,8 +78,16 @@ app.MapDelete("/cars/{id}", async (int id, ICarRepository repository) =>
     .WithName("Delete Car")
     .WithTags("Deleters");
 
-app.UseHttpsRedirection();
+app.MapGet("/cars/search/sort/{query}",
+    async (SearchParameters searchParameters, ICarRepository repository) =>
+    await repository.GetCarAsync(searchParameters) is IEnumerable<Car> cars
+        ? Results.Ok(cars)
+        : Results.NotFound(Array.Empty<Car>()))
+    .Produces<List<Car>>(StatusCodes.Status200OK)
+    .WithName("Search Car Name and Price")
+    .WithTags("Getters");
 
+app.UseHttpsRedirection();
 app.Run();
 
 
